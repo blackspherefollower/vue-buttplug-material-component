@@ -1,6 +1,6 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-import ButtplugPanel from "./ButtplugPanel";
+import ButtplugPanel from "./index";
 import { ButtplugClient } from "buttplug";
 
 @Component({

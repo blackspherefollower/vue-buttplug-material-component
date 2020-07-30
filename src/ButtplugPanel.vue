@@ -4,7 +4,7 @@
       <v-btn
         color="red lighten-2"
         @click="ConnectToIntifaceDesktop"
-        class="white--text"
+        class="white--text ma-2"
         :disabled="isConnecting"
       >
         Connect To Intiface Desktop
@@ -13,39 +13,40 @@
         color="red lighten-2"
         @click="ConnectInBrowser"
         :disabled="!HasWebBluetooth"
-        class="white--text"
+        class="white--text ma-2"
       >
         {{ HasWebBluetooth ? "Connect In Browser" : "Requires WebBluetooth" }}
       </v-btn>
       <v-card elevation="3" class="message-card" v-if="uiMessage">
-        <v-layout row>
-          <v-flex shrink>
+        <v-row>
+          <v-col>
             <v-btn icon @click="CloseUiMessage">
               <v-icon>close</v-icon>
             </v-btn>
-          </v-flex>
-          <v-flex class="message-flex">
+          </v-col>
+          <v-col class="message-flex">
             <span class="error-text" v-if="uiMessage && uiMessage[0] === 0">Error:</span>
             {{ uiMessage[1] }}
-          </v-flex>
-        </v-layout>
+          </v-col>
+        </v-row>
       </v-card>
       <v-card v-if="isConnecting">
-        <v-layout row>
-          <v-flex shrink>
+        <v-row>
+          <v-col>
             <v-progress-circular
               indeterminate
               color="purple"
-            ></v-progress-circular><span>Trying to connect to Intiface Desktop...</span>
-          </v-flex>
-        </v-layout>
+            ></v-progress-circular>
+            <span>Trying to connect to Intiface Desktop...</span>
+          </v-col>
+        </v-row>
       </v-card>
-      <v-expansion-panel v-if="!isConnecting">
-        <v-expansion-panel-content>
-          <template v-slot:header>
+      <v-expansion-panels v-if="!isConnecting">
+        <v-expansion-panel>
+          <v-expansion-panel-header>
             Advanced Settings
-          </template>
-          <v-container>
+          </v-expansion-panel-header>
+          <v-expansion-panel-content>
             <v-checkbox
               v-model="scanOnConnect"
               label="Start Scanning On Connect">
@@ -54,61 +55,64 @@
             <v-subheader>
               Websocket Addresses
             </v-subheader>
-            <v-layout
+            <v-row
               v-for="address in desktopAddresses"
               :class="address.IsValidURL ? 'address-line-correct address-line' : 'address-line-incorrect address-line'"
               :key="address.Id"
             >
-              <v-flex class="address-entry">
+              <v-col class="address-entry">
                 <v-text-field
                   label="Host"
                   v-model="address.Host"
                   @change="StoreAddressCookie()"
                 ></v-text-field>
-              </v-flex>
-              <v-flex class="address-entry">
+              </v-col>
+              <v-col class="address-entry">
                 <v-text-field
                   label="Port"
                   mask="#####"
                   v-model="address.Port"
                   @change="StoreAddressCookie()"
                 ></v-text-field>
-              </v-flex>
-              <v-flex>
+              </v-col>
+              <v-col>
                 <v-checkbox
                   v-model="address.Insecure"
                   @change="StoreAddressCookie()"
                   label="Insecure">
                 </v-checkbox>
-              </v-flex>
-              <v-flex>
+              </v-col>
+              <v-col>
                 <v-checkbox
                   v-model="address.Secure"
                   @change="StoreAddressCookie()"
                   label="Secure">
                 </v-checkbox>
-              </v-flex>
-              <v-flex shrink>
+              </v-col>
+              <v-col>
                 <v-btn
                   @click="RemoveAddress(address.Id)">
                   <v-icon>close</v-icon>
                 </v-btn>
-              </v-flex>
-            </v-layout>
+              </v-col>
+            </v-row>
             <v-btn
+              class="ma-2"
               @click="AddAddress()">
               <v-icon>add</v-icon>
             </v-btn>
             <v-btn
+              class="ma-2"
               @click="ResetAddresses()">
               Reset
             </v-btn>
-          </v-container>
-        </v-expansion-panel-content>
-      </v-expansion-panel>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+      </v-expansion-panels>
     </div>
     <div v-if="client.Connected">
       <v-btn
+        class="ma-2"
         color="red lighten-2"
         dark
         @click="Disconnect"
@@ -116,6 +120,7 @@
         Disconnect
       </v-btn>
       <v-btn
+        class="ma-2"
         color="red lighten-2"
         dark
         @click="ToggleScanning"

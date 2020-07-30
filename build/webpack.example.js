@@ -3,7 +3,7 @@ const path = require('path');
 const webpack = require('webpack');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const { VueLoaderPlugin } = require('vue-loader');
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
   stats: {
@@ -15,10 +15,10 @@ module.exports = {
     chunks: false,
     chunkModules: false
   },
-  entry: './example/main.ts',
+  entry: './src/main.ts',
   output: {
-    path: path.resolve(__dirname, './dist'),
-    publicPath: '/dist/',
+    path: path.resolve('./dist/example'),
+    publicPath: '/dist/example/',
     filename: 'example.js',
   },
   module: {
@@ -51,7 +51,24 @@ module.exports = {
       {
         test: /\.css$/,
         use: ['style-loader', 'css-loader']
-      }
+      },
+      {
+        test: /\.s(c|a)ss$/,
+        use: [
+          'vue-style-loader',
+          'css-loader',
+          {
+            loader: 'sass-loader',
+            options: {
+              implementation: require('sass'),
+              sassOptions: {
+                fiber: require('fibers'),
+                indentedSyntax: true // optional
+              },
+            },
+          },
+        ],
+      },
     ]
   },
   resolve: {
@@ -87,16 +104,17 @@ if (process.env.NODE_ENV === 'production') {
       }
     }),
     new webpack.optimize.ModuleConcatenationPlugin(),
-    new UglifyJSPlugin({
+    new TerserPlugin({
       sourceMap: true,
-      uglifyOptions: {
+      parallel: true,
+      terserOptions: {
         mangle: {
-          keep_fnames: true,
-          keep_classnames: true
+          keep_classnames: true,
+          keep_fnames: true
         },
         compress: {
           keep_fnames: true,
-          keep_classnames: true
+          keep_classnames: true,
         }
       }
     }),
